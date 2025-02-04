@@ -5,6 +5,10 @@ import (
 	"errors"
 )
 
+const (
+	EntityName = "Item"
+)
+
 var (
 	ErrTitleIsBlank = errors.New("title is blank")
 	ErrItemDeleted  = errors.New("item is deleted")

@@ -1,6 +1,7 @@
 package bussiness
 
 import (
+	"Go_backend_tut/common"
 	"Go_backend_tut/modules/item/model"
 	"context"
 )
@@ -20,7 +21,7 @@ func (bussiness *GetItemBussinessById) GetItemBuzById(ctx context.Context, id in
 
 	data, err := bussiness.storage.GetItemById(ctx, map[string]interface{}{"id": id})
 	if err != nil {
-		return nil, err
+		return nil, common.ErrCannotGetEntity(model.EntityName, err)
 	}
 	return data, nil
 }

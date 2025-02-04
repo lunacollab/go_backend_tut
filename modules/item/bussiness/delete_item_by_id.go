@@ -1,6 +1,7 @@
 package bussiness
 
 import (
+	"Go_backend_tut/common"
 	"Go_backend_tut/modules/item/model"
 	"context"
 )
@@ -21,14 +22,17 @@ func (bussiness *DeleteItemBussinessById) DeleteItemBuzById(ctx context.Context,
 
 	data, err := bussiness.storage.GetItemById(ctx, map[string]interface{}{"id": id})
 	if err != nil {
-		return err
+		if err == common.RecordNotFound {
+			return common.ErrCannotGetEntity(model.EntityName, err)
+		}
+		return common.ErrorCannotDeleteEntity(model.EntityName, err)
 	}
 	if data.Status != nil && *data.Status == model.ItemStatusDeleted {
-		return model.ErrItemDeleted
+		return common.ErrEntityDeleted(model.EntityName, model.ErrItemDeleted)
 	}
 
 	if err := bussiness.storage.DeleteItemById(ctx, map[string]interface{}{"id": id}); err != nil {
-		return err
+		return common.ErrorCannotDeleteEntity(model.EntityName, err)
 	}
 
 	return nil

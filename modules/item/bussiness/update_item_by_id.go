@@ -1,6 +1,7 @@
 package bussiness
 
 import (
+	"Go_backend_tut/common"
 	"Go_backend_tut/modules/item/model"
 	"context"
 )
@@ -21,14 +22,17 @@ func (bussiness *UpdateItemBussinessById) UpdateItemBuzById(ctx context.Context,
 
 	data, err := bussiness.storage.GetItemById(ctx, map[string]interface{}{"id": id})
 	if err != nil {
-		return err
+		if err == common.RecordNotFound {
+			return common.ErrCannotGetEntity(model.EntityName, err)
+		}
+		return common.ErrCannotUpdateEntity(model.EntityName, err)
 	}
 	if data.Status != nil && *data.Status == model.ItemStatusDeleted {
-		return model.ErrItemDeleted
+		return common.ErrEntityDeleted(model.EntityName, model.ErrItemDeleted)
 	}
 
 	if err := bussiness.storage.UpdateItemById(ctx, map[string]interface{}{"id": id}, dataUpdate); err != nil {
-		return err
+		return common.ErrCannotUpdateEntity(model.EntityName, err)
 	}
 
 	return nil

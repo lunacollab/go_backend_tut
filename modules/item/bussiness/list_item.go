@@ -21,7 +21,10 @@ func (bussiness *ListItemBussiness) ListItemBuz(ctx context.Context, filter *mod
 
 	data, err := bussiness.storage.ListItem(ctx, filter, paging)
 	if err != nil {
-		return nil, err
+		if err == common.RecordNotFound {
+			return common.ErrCannotGetEntity(model.EntityName, err)
+		}
+		return nil, common.ErrCannotListEntity(model.EntityName, err)
 	}
 	return data, nil
 }

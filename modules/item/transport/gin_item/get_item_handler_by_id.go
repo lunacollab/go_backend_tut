@@ -15,7 +15,7 @@ func GetItemById(db *gorm.DB) func(c *gin.Context) {
 		strconv.Atoi(c.Param("id"))
 		id, err := strconv.Atoi(c.Param("id"))
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			c.JSON(http.StatusBadRequest, common.ErrInvalidRequest(err))
 			return
 		}
 		store := storage.NewSQLStorage(db)
@@ -24,7 +24,7 @@ func GetItemById(db *gorm.DB) func(c *gin.Context) {
 		data, err := biz.GetItemBuzById(c.Request.Context(), id)
 
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			c.JSON(http.StatusBadRequest, err)
 			return
 		}
 		c.JSON(http.StatusOK, common.SimpleSuccessResponse(data))
